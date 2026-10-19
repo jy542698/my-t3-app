@@ -1,10 +1,12 @@
 import Link from "next/link";
 
 import { LatestPost } from "~/app/_components/post";
+import { WelcomeBox } from "~/app/_components/welcome";
 import { api, HydrateClient } from "~/trpc/server";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from 焦誉" });
+  const serverTime = await api.info.serverTime();
 
   void api.post.getLatest.prefetch();
 
@@ -41,9 +43,17 @@ export default async function Home() {
             <p className="text-2xl text-white">
               {hello ? hello.greeting : "Loading tRPC query..."}
             </p>
+            <p className="text-lg text-white/80">
+              服务器时间：{serverTime.time}
+            </p>
+            <p className="text-sm text-white/60">
+              {serverTime.message}
+            </p>
           </div>
 
           <LatestPost />
+
+          <WelcomeBox />
         </div>
       </main>
     </HydrateClient>
